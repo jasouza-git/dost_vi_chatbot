@@ -1,3 +1,25 @@
+<h1>DOST VI - Chatbot</h1>
+<style>
+details{border-left:2px solid #fff5;margin-left:10px;margin-top:30px}
+summary{position:relative;left:-5.5px;top:-20px;margin-bottom:-25px;}
+</style>
+<details open>
+  <summary><b>Problems and Solutions</b></summary>
+  <details open>
+    <summary><b>Current solutions to problems</b></summary>
+    <table>
+        <tr><th>Problem</th><th>Solution</th></tr>
+        <tr><td>Individuals face difficulties finding DOST-relevant information scattered across multiple sources</td><td>By developing a chatbot for Facebook Messenger, the most widely used communication platform in the Philippines, we can centralize information access. This approach will reach a broader audience, including those with slower internet connections or limited technological skills, providing a single, comprehensive source of information.</td>
+        <tr><td>The information available is not personalized or easily understood without additional explanation</td><td>The chatbot can be trained or integrated with DOST documents and information to address specific queries. It will provide tailored explanations and guide users through processes, reducing frustration and confusion while preventing missed opportunities.</td></tr>
+        <tr><td>Not everyone speaks or understands English, particularly those who need help the most</td><td>By utilizing a multilingual language model, the chatbot can interact in various languages, making DOST processes, programs, scholarships, and services accessible to non-English speakers.</td></tr>
+    </table>
+  </details>
+  <details open>
+    <summary><b>Future solutions to problems</b></summary>
+  </details>
+</details>
+
+
 # DOST VI - Chatbot
 
 ### Table of Content
