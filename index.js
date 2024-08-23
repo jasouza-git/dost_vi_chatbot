@@ -48,7 +48,7 @@ const stage0 = async () => {
       executablePath: config['browser'],
       userDataDir: config['userdat'],
       args: [ '--disable-infobars', '--no-sandbox', '--disable-setuid-sandbox', '--disable-gpu' ],
-      //headless: false,
+      headless: false,
   });
   var page;
   try {
