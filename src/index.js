@@ -15,9 +15,9 @@ const config = {
   'inboxid': '?asset_id=382494194953080&selected_item_id=100077581671764&mailbox_id=&thread_type=FB_MESSAGE',
   'sleepms': 2000,
   'timeout': 0,
-  'fmodels': ['tinyllama'],
+  'fmodels': ['dost'],
   'aigreet': "😊 Hi there! I'm Chatbot by DOST, your helpful assistant for all things related to the Department of Science and Technology (DOST). I'd be delighted to assist you with any questions or concerns about DOST programs, scholarships, and services. What's on your mind? 🤔",
-  'devtool': true,
+  'devtool': false,
 };
 
 /* ----- VARIABLES ----- */

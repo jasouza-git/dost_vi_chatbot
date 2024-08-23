@@ -1,4 +1,12 @@
-<h1>DOST VI - Chatbot</h1>
+# DOST VI - Chatbot
+### How to start
+```bash
+# Install dependencies
+npm i
+# Start app
+npm start
+```
+
 <details>
   <summary><b>Introduction</b></summary>
   <h2>Organizers</h2>
