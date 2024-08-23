@@ -297,6 +297,67 @@
         #chat_logs .me span::before {
             display: none;
         }
+        #chat_logs .intro {
+            margin-top: 150px;
+        }
+        @keyframes mascot_jump {
+            0% {transform:rotate(-90deg);}
+            100% {transform:rotate(5deg);}
+        }
+        @keyframes mascot_sway {
+            0% {transform:rotate(5deg);}
+            50% {transform:rotate(-5deg);}
+            100% {transform:rotate(5deg);}
+        }
+        @keyframes mascot_wave {
+            0% {transform:rotate(0deg);}
+            30% {transform:rotate(-25deg);}
+            75% {transform:rotate(10deg);}
+            100% {transform:rotate(0deg);}
+        }
+        @keyframes mascot_nods {
+            0% {transform:rotate(0deg);}
+            25% {transform:rotate(-15deg);}
+            75% {transform:rotate(10deg);}
+            100% {transform:rotate(0deg);}
+        }
+        #chat_logs .intro>div {
+            position: relative;
+            height: auto;
+            width: 100px;
+            height: 184px;
+            left: calc(75% + 50px);
+            top: -130px;
+            margin-right: -100px;
+            display: grid;
+            grid-template: auto / auto;
+            transform: rotate(-90deg);
+            transform-origin: center bottom;
+            animation: mascot_jump ease-out 1s 1 forwards, mascot_sway ease-in-out 1s infinite 1s;
+            z-index: -1;
+        }
+        #chat_logs .intro>div::before {
+            position: relative;
+            left: 0%;
+            top: 0%;
+            width: 2px;
+            height: 2px;
+            background-color: red;
+            border: 2px solid red;
+            z-index: 999;
+        }
+        #chat_logs .intro img {
+            width: 100px;
+            grid-area: 1 / 1;
+        }
+        #chat_logs .intro img.hand {
+            transform-origin: 70% 65%;
+            animation: mascot_wave ease-in-out 0.75s infinite;
+        }
+        #chat_logs .intro img.head {
+            transform-origin: 50% 50%;
+            animation: mascot_nods ease-in-out 1.5s infinite;
+        }
         #chat_send {
             display: flex;
             gap: 10px;
@@ -329,6 +390,28 @@
             font: 30px Arial;
             padding: 20px;
             overflow: auto;
+        }
+        #logs {
+            position: fixed;
+            left: 10px;
+            top: 10px;
+            width: calc(100% - 20px);
+            height: calc(100% - 160px);
+            opacity: 0;
+            transition: opacity .5s;
+            z-index: -1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden auto;
+        }
+        #logs>div {
+            display: grid;
+            grid-template: auto / 50px 180px calc(40% - 115px) calc(60% - 115px);
+        }
+        #logs>div:first-child {
+            position: sticky;
+            top: 0;
+            background-color: #62c5d1;
         }
     </style>
   </head>
@@ -365,16 +448,20 @@
     </div>
     <div id="body">
         <div><button></button><h3>Message in messenger</h3></div>
-        <div><h3>Chrome Path</h3><input value="C:/Program Files/Google/Chrome/Application/chrome.exe"></input></div>
+        <div><h3>Chrome Path</h3><input id="config-browser" value=""></input></div>
     </div>
     <div id="chat">
         <div id="chat_logs">
             <div>
-                <div>
+                <div style="height:calc(100vh - 300px)"></div>
+                <div class="intro load">
+                    <div>
+                        <img src="../asset/mascot_hand.png" class="hand">
+                        <img src="../asset/mascot_body.png">
+                        <img src="../asset/mascot_head.png" class="head">
+                    </div>
                     <svg><use href="#logo_svg" /></svg>
-                    <span>
-                        😊 Hi there! I'm Chatbot by DOST, your helpful assistant for all things related to the Department of Science and Technology (DOST). I'd be delighted to assist you with any questions or concerns about DOST programs, scholarships, and services. What's on your mind? 🤔
-                    </span>
+                    <span></span>
                 </div>
             </div>
         </div>
@@ -389,6 +476,10 @@
                 Send
             </button>
         </div>
+    </div>
+    <div id="logs">
+        <div><span>No.</span><span>Date</span><span>Name</span><span>Message</span></div>
+        <div><span>0</span><span>01:03 24/08/2024</span><span>Jason D'Souza</span><span>No I do not</span></div>
     </div>
     <div id="type"></div>
     <div id="foot">
@@ -416,22 +507,55 @@
         function load_page(dom, page) {
             //document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
             if (page == 0) {
-                window.electron.send('action', 'browser');
+                if (dom.classList.contains('on')) {
+                    window.electron.send('action', 'browser closed');
+                    dom.classList.remove('on');
+                } else {
+                    window.electron.send('action', 'browser');
+                    dom.classList.add('on');
+                }
             }
             if (page == 1) {
                 if (dom.classList.contains('on')) {
-                    setTimout(()=>document.querySelectorAll('#logo,#body,#title').forEach(x=>x.style.opacity = 1), 500);
+                    setTimeout(()=>document.querySelectorAll('#logo,#body,#title').forEach(x=>x.style.opacity = 1), 500);
                     document.querySelectorAll('#chat').forEach(x=>{x.style.opacity = 0;x.style.zIndex=-1});
+                    dom.classList.remove('on');
                 } else {
-                    document.querySelectorAll('#logo,#body,#title').forEach(x=>x.style.opacity = 0);
+                    var d2 = document.querySelector('#foot div:nth-child(3)');
+                    if (d2.classList.contains('on')) {
+                        d2.classList.remove('on');
+                        document.querySelectorAll('#logs').forEach(x=>{x.style.opacity = 0;x.style.zIndex=-1});
+                    }
+                    document.querySelector('#chat_logs>div>div:last-child').scrollIntoView({behavior: 'smooth', block: 'end'});
+                    document.querySelectorAll('#logo,#body,#title').forEach(x=>{x.style.opacity = 0;x.style.zIndex=0});
+                    document.querySelectorAll('#logs').forEach(x=>{x.style.opacity = 0;x.style.zIndex=-1});
                     setTimeout(()=>document.querySelectorAll('#chat').forEach(x=>{x.style.opacity = 1;x.style.zIndex=1}), 500);
+                    dom.classList.add('on');
                 }
-                
-            } else {
-                //document.querySelectorAll('#logo,#body,#title').forEach(x=>x.style.opacity = 1);
             }
-            if (dom.classList.contains('on')) dom.classList.remove('on');
-            else dom.classList.add('on');
+            if (page == 2) {
+                if (dom.classList.contains('on')) {
+                    setTimeout(()=>document.querySelectorAll('#logo,#body,#title').forEach(x=>x.style.opacity = 1), 500);
+                    document.querySelectorAll('#logs').forEach(x=>{x.style.opacity = 0;x.style.zIndex=-1});
+                    dom.classList.remove('on');
+                } else {
+                    var d2 = document.querySelector('#foot div:nth-child(2)');
+                    if (d2.classList.contains('on')) {
+                        d2.classList.remove('on');
+                        document.querySelectorAll('#chat').forEach(x=>{x.style.opacity = 0;x.style.zIndex=-1});
+                    }
+                    document.querySelectorAll('#logo,#body,#title').forEach(x=>{x.style.opacity = 0;x.style.zIndex=0});
+                    document.querySelectorAll('#chat').forEach(x=>{x.style.opacity = 0;x.style.zIndex=-1});
+                    setTimeout(()=>document.querySelectorAll('#logs').forEach(x=>{x.style.opacity = 1;x.style.zIndex=1}), 500);
+                    dom.classList.add('on');
+                }
+            }
+            if (page == 3) {
+                window.electron.send('action', 'logout');
+                dom.classList.add('on');
+            }
+            //if (dom.classList.contains('on')) dom.classList.remove('on');
+            //else dom.classList.add('on');
         }
         if (window.electron == undefined) {
             document.querySelector('#title h3').setAttribute('class', 'error');
@@ -450,12 +574,35 @@
                     () => {},
                 ][e];
             });
+            window.electron.on('action', e => {
+                if (e == 'browser closed') document.querySelectorAll('#foot div:first-child, #foot div:last-child').forEach(x=>x.classList.remove('on'));
+            });
             window.electron.on('chatbot', m => {
                 var dom = document.querySelector('#chat_logs>div>div.load');
                 dom.querySelector('span').innerHTML = m;
                 dom.classList.remove('load');
                 dom.querySelector('span').scrollIntoView({behavior: 'smooth', block: 'end'});
             });
+            window.electron.on('config-browser', b => {
+                document.querySelector('#config-browser').value = b;
+            });
+            window.electron.on('log', x => {
+                console.log(x);
+                var d = document.createElement('div');
+                [document.querySelectorAll('#logs>div').length-1, ...x].forEach(v=>{
+                    var s = document.createElement('span');
+                    s.innerText = v;
+                    d.appendChild(s);
+                })
+                document.querySelector('#logs').appendChild(d);
+            });
+            document.querySelector('#config-browser').onchange = () => {
+                window.electron.send('config-browser', document.querySelector('#config-browser').value);
+            };
+            document.querySelector('#chat_send>button:first-child').onclick = () => {
+                window.electron.send('action', 'resetchat');
+                document.querySelector('#chat_logs>div').innerHTML = '<div style="height:calc(100vh - 300px)"></div><div class="intro load"><div><img src="../asset/mascot_hand.png" class="hand"><img src="../asset/mascot_body.png"><img src="../asset/mascot_head.png" class="head"></div><svg><use href="#logo_svg" /></svg><span></span></div>';
+            }
             document.querySelector('#chat_send>button:last-child').onclick = () =>{
                 //document.querySelector('#chat_logs').scrollTop = document.querySelector('#chat_logs').scrollHeight;
                 var m = document.createElement('div');
@@ -475,10 +622,14 @@
 
                 d.scrollIntoView({behavior: 'smooth', block: 'end'});
             };
-            document.querySelector('#chat_send>div').onkeyup = e => {
-                if (e.key == 'Enter') document.querySelector('#chat_send>button:last-child').click();
+            document.querySelector('#chat_send>div').onkeypress = e => {
+                if (e.key == 'Enter') {
+                    document.querySelector('#chat_send>button:last-child').click();
+                    e.preventDefault();
+                }
             };
             document.querySelectorAll('#foot div').forEach((x,n) => x.onclick = e => load_page(x, n));
+            //document.querySelectorAll('#foot div')[1].click();
         }
         // tmp
         //n=1;load_page(document.querySelectorAll('#foot div')[n],n);
