@@ -40,7 +40,7 @@ summary{position:relative;left:-15.5px;top:-20px;margin-bottom:-25px;}
     <summary><b>Challenges we faced</b></summary>
     <table>
       <tr><th>Challenge</th><th>Explaination/Solution</th></tr>
-      <tr><td>Finding a good base LLM model</td><td>Instead of creating an LLM from scratch which would require huge amount of computative power and huge datasets which we cant have, we started with a base LLM model using <b>Ollama</b> to manage, eventually sticking on the <b>LLama3 7b</b> model. Any more advance LLM are too slow or too resource intensive</td></tr>
+      <tr><td>Finding a good base LLM model</td><td>Instead of creating an LLM from scratch which would require huge amount of computative power and huge datasets which we cant have, we started with a base LLM model using <code>Ollama</code> to manage, eventually sticking on the <code>LLama3 7b</code> model. Any more advance LLM are too slow or too resource intensive</td></tr>
       <tr><td>Training our own custom model</td><td>To train or fine-tune the model on the dataset of four provided documents, we applied some LLM techniques like Chunking, Few Shot Learning, and Prompt engineering to enhance the efficiency and accuracy of the information that's retrieved and processed in the NLP. The hardest data set to train on was the RSTL services document because is was the largest among the four</td></tr>
       <tr><td>Graphical Designing</td><td>Since our groups consist primarly of Computer engineering students we lacked the human resources to design a good graphical user interface so we had to spend alot of time planning and trail and error a good looking interface. Resulting into a minimalistic simple interface</td></tr>
     </table>
@@ -49,12 +49,13 @@ summary{position:relative;left:-15.5px;top:-20px;margin-bottom:-25px;}
     <summary><b>Processsing stages</b></summary>
     <ol>
       <li>We first downloaded our dataset and convert them from PDF to images, markdowns, texts, etc. mostly locally though softwares like <code>pandoc</code> or <code>convert</code> so that we can later use them to train the model</li>
-      <li>We downloaded <b>Ollama</b> and tested serveral pre-existing LLM/NLP to act has our base LLM to train our fine-tuined model like <b>Llama</b>, <b>Mistral</b>, and <b>llava</b></li>
-      <li>We trail and error different <b>modelfile</b>s on different LLM models and decided to stick to <b>LLama3 7b</b> for it was the most advance LLM/NLP we can host without it being too slow or dumb. This step of the process happened in parallel with the UI development because it took a long time to fine-tune it to our desired model</b>
-      <li>The best platform to make this project was <b>Python</b> for it support in AI frameworks, <b>Javascript</b> for its adaptibility in most systems, and <b>C/C++</b> for its optimizations and efficency. Python is slow, limited interface(tkinter), and lacked packability in different systems. C/C++ is good but would take alot of time thus not suited for our limited time range. Thus we picked Javascript, more specifically Node JS for its diversity in packages (NPM)</li>
-      <li>We created an Electron project to allow future packability in different systems especially servers</li>
-      <li>We then created the interface in pure HTML, JS, and CSS for the electron to display</li>
-      <li>
+      <li>We downloaded <code>Ollama</code> and tested serveral pre-existing LLM/NLP to act has our base LLM to train our fine-tuined model like <code>Llama</code>, <code>Mistral</code>, and <code>Llava</code></li>
+      <li>We trail and error different <code>modelfile</code>s on different LLM models and decided to stick to <code>LLama3 7b</code> for it was the most advance LLM/NLP we can host without it being too slow or dumb. This step of the process happened in parallel with the UI development because it took a long time to fine-tune it to our desired model</code>
+      <li>The best platform to make this project was <code>Python</code> for it support in AI frameworks, <code>Javascript</code> for its adaptibility in most systems, and <code>C/C++</code> for its optimizations and efficency. Python is slow, limited interface<i>(tkinter)</i>, and lacked packability in different systems. C/C++ is good but would take alot of time thus not suited for our limited time range. Thus we picked Javascript, more specifically Node JS for its diversity in packages<i>(NPM)</i></li>
+      <li>We created an <code>Electron</code> project to allow future packability in different systems especially servers</li>
+      <li>We then created the interface in pure <code>HTML</code>, <code>JS</code>, and <code>CSS</code> for the electron to display</li>
+      <li>We connected the interface to <code>Ollama</code> with our own custom model named <code>dost</code> to a chating interface</li>
+      <li>We connected <code>Puppeteer</code> to a facebook Page named <code>DOST-VI not legit</code></li>
     </ol>
   </details>
   <details open>
