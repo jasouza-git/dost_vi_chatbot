@@ -4,7 +4,6 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs').promises;
 const puppeteer = require('puppeteer-core');
 const path = require('node:path');
-const ollama = require('ollama');
 
 /* ----- CONFIGURATIONS ----- */
 const config = {
@@ -12,9 +11,7 @@ const config = {
   'userdat': path.join(__dirname, 'userdata'),
   'prefers': '{"browser":{"window_placement":{"bottom":925,"left":544,"maximized":false,"right":1365,"top":179,"work_area_bottom":1032,"work_area_left":0,"work_area_right":1920,"work_area_top":0}}}',
   'inboxid': '?asset_id=382494194953080&selected_item_id=100077581671764&mailbox_id=&thread_type=FB_MESSAGE',
-  'sleepms': 2000,
 }
-
 
 /* ----- VARIABLES ----- */
 var main, web;
@@ -62,46 +59,37 @@ const stage0 = async () => {
   }
   main.webContents.send('login-status', 3);
 
-  // Wait for chats to load
+  // Get chats
   await page.waitForSelector('[data-pagelet=GenericBizInboxThreadListViewBody] [role=presentation]');
   
-  // Set current chat has anchor chat
-  await page.evaluate(() => {
-    [...document.querySelectorAll('[data-pagelet=GenericBizInboxThreadListViewBody] [role=presentation]')].filter(x=>window.getComputedStyle(x).backgroundColor=='rgb(245, 246, 247)')[0].setAttribute('id','anchor_object');
-  });
-
-  // Keep on scanning for unread messages and reply
-  var chat = null;
-  while (true) {
-    // Get unread message
-    chat = await page.evaluate(() => {
-      var x = [...document.querySelectorAll('[data-pagelet=GenericBizInboxThreadListViewBody] [role=presentation]')].filter(x=>window.getComputedStyle(x.querySelector(':scope>div>div:nth-child(2)>div:first-child>div:first-child>div>div>div:nth-child(2)')).fontWeight == '700');
-      if (x.length == 0) return null;
-      x[0].click();
-      return {
-        'name': x[0].querySelector(':scope>div>div:nth-child(2)>div:first-child>div:first-child').innerText.trim(),
-        'img': x[0].querySelector(':scope>div>div:first-child>div>div>div:first-child>img').getAttribute('src'),
-        'date': x[0].querySelector(':scope>div>div:nth-child(2)>div:nth-child(2)>div:first-child>div>div:first-child').innerText.replace(/(.*)\n((\d+:\d+).*(AM|PM))?.*/g, '$3 $4 $1').trim(),
-      }
-    });
-    // No unread message, wait 1 second to try again
-    if (chat == null) {
-      await new Promise(res => setTimeout(res, config['sleepms']));
-      continue;
+  const chats = await page.evaluate(() => [...document.querySelectorAll('[data-pagelet=GenericBizInboxThreadListViewBody] [role=presentation]')].map(x=>{
+    while (x.querySelector(':scope>div>div:first-child>div>div>div:first-child>img') == null);
+    return {
+      'name': x.querySelector(':scope>div>div:nth-child(2)>div:first-child>div:first-child').innerText.trim(),
+      'unread': window.getComputedStyle(x.querySelector(':scope>div>div:nth-child(2)>div:first-child>div:first-child>div>div>div:nth-child(2)')).fontWeight == '700',
+      'img': x.querySelector(':scope>div>div:first-child>div>div>div:first-child>img').getAttribute('src'),
+      'date': x.querySelector(':scope>div>div:nth-child(2)>div:nth-child(2)>div:first-child>div>div:first-child').innerText.replace(/(.*)\n((\d+:\d+).*(AM|PM))?.*/g, '$3 $4 $1').trim(),
+      //'dom': x
     }
-    // Wait for messaging area to load
+  }));
+  console.log(chats);
+
+  
+  for(var n = 0; n < chats.length; n++) {
+    var chat = chats[n];
+    if (!chat.unread) continue;
+    // Click Account
+    await page.evaluate(n => document.querySelectorAll('[data-pagelet=GenericBizInboxThreadListViewBody] [role=presentation]')[n].click(), n);
     await page.waitForFunction(chat => {
       const dom = document.querySelector('[data-pagelet="BizInboxDetailViewHeaderSectionWrapper"] [style="-webkit-line-clamp: 1;"]');
       return dom != null && dom.innerText.trim() == chat['name'];
     }, {}, chat);
-    // Send message
     await page.waitForSelector('[data-pagelet="BizP13NInboxMessengerDetailView"] textarea');
     await page.type('[data-pagelet="BizP13NInboxMessengerDetailView"] textarea', 'Hello World');
     await page.click('[aria-label="Send"]');
-    // Go to anchor account to wait again
-    await page.click('#anchor_object');
-    await new Promise(res => setTimeout(res, config['sleepms']));
+
   }
+  console.log(chats);
 }
 
 /* ----- MAIN WINDOW ----- */
