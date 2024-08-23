@@ -89,6 +89,10 @@
             content: 'Running';
             background-color: #28CC2D;
         }
+        #title h3.chat::after {
+            content: 'Replying...';
+            background-color: purple;
+        }
         #body {
             position: fixed;
             left: 20px;
@@ -207,7 +211,7 @@
             document.querySelector('#title h3').setAttribute('class', 'error');
         } else {
             window.electron.on('login-status', e => {
-                document.querySelector('#title h3').setAttribute('class', ['load','nolog','error','log'][e]);
+                document.querySelector('#title h3').setAttribute('class', ['load','nolog','error','log','run','chat'][e]);
                 document.querySelector('#title h3').onclick = [
                     () => {},
                     () => window.electron.send('action', 'login'),
@@ -216,6 +220,8 @@
                         document.querySelector('#title h3').setAttribute('class', 'load');
                     },
                     () => window.electron.send('action', 'run'),
+                    () => window.electron.send('action', 'stop'),
+                    () => {},
                 ][e];
             });
             document.querySelectorAll('#foot div').forEach((x,n) => x.onclick = e => {
