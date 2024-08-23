@@ -6,6 +6,7 @@
     <style>
         body {
             font-family: 'Arial Black';
+            zoom: .75;
         }
         :focus {
             outline: none;
@@ -240,11 +241,13 @@
         #chat_logs>div>div {
             display: flex;
             flex-shrink: 0;
+            margin-left: 10px;
         }
         #chat_logs svg {
             width: 80px;
             height: 80px;
             margin-top: 5px;
+            overflow: visible;
         }
         #chat_logs span {
             background-color: #fff;
@@ -255,7 +258,7 @@
             border-radius: 20px;
             margin-left: 10px;
             border: 5px solid #62c5d1;
-            max-width: 50%;
+            max-width: 75%;
         }
         #chat_logs span::before {
             content: '';
@@ -272,6 +275,17 @@
             border: 0px solid #62c5d1;
             border-width: 0 0 5px 5px;
             box-sizing: border-box;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #chat_logs .load svg use {
+            transform-origin: center center;
+            animation: spin 1s linear infinite;
+        }
+        #chat_logs .load span {
+            display: none;
         }
         #chat_logs .me {
             justify-content: end;
@@ -359,66 +373,7 @@
                 <div>
                     <svg><use href="#logo_svg" /></svg>
                     <span>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
-                    </span>
-                </div>
-                <div class="me">
-                    <span>
-                        What?
-                    </span>
-                </div>
-                <div>
-                    <svg><use href="#logo_svg" /></svg>
-                    <span>
-                        Hehehe
-                    </span>
-                </div>
-                <div>
-                    <svg><use href="#logo_svg" /></svg>
-                    <span>
-                        Im joking
-                    </span>
-                </div>
-                <div>
-                    <svg><use href="#logo_svg" /></svg>
-                    <span>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
-                    </span>
-                </div>
-                <div>
-                    <svg><use href="#logo_svg" /></svg>
-                    <span>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
-                    </span>
-                </div>
-                <div>
-                    <svg><use href="#logo_svg" /></svg>
-                    <span>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
-                    </span>
-                </div>
-                <div>
-                    <svg><use href="#logo_svg" /></svg>
-                    <span>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
-                    </span>
-                </div>
-                <div>
-                    <svg><use href="#logo_svg" /></svg>
-                    <span>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
-                    </span>
-                </div>
-                <div>
-                    <svg><use href="#logo_svg" /></svg>
-                    <span>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
-                    </span>
-                </div>
-                <div>
-                    <svg><use href="#logo_svg" /></svg>
-                    <span>
-                        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book
+                        😊 Hi there! I'm Chatbot by DOST, your helpful assistant for all things related to the Department of Science and Technology (DOST). I'd be delighted to assist you with any questions or concerns about DOST programs, scholarships, and services. What's on your mind? 🤔
                     </span>
                 </div>
             </div>
@@ -496,16 +451,32 @@
                 ][e];
             });
             window.electron.on('chatbot', m => {
-                var dom = document.querySelector('#chat_logs>div.load');
-                dom.innerHTML = m;
+                var dom = document.querySelector('#chat_logs>div>div.load');
+                dom.querySelector('span').innerHTML = m;
                 dom.classList.remove('load');
+                dom.querySelector('span').scrollIntoView({behavior: 'smooth', block: 'end'});
             });
             document.querySelector('#chat_send>button:last-child').onclick = () =>{
-                window.electron.send('chatbot', document.querySelector('#chat_send>div').innerText);
+                //document.querySelector('#chat_logs').scrollTop = document.querySelector('#chat_logs').scrollHeight;
+                var m = document.createElement('div');
+                var s = document.createElement('span');
+                m.classList.add('me');
+                s.innerText = document.querySelector('#chat_send>div').innerText;
+                m.appendChild(s);
+                document.querySelector('#chat_logs>div:first-child').appendChild(m);
+
                 var d = document.createElement('div');
-                d.innerHTML += '<svg><use href="#logo_svg"/></svg><span></span>';
                 d.classList.add('load');
-                document.querySelector('#chat_logs').appendChild(d);
+                d.innerHTML = '<svg><use href="#logo_svg"/></svg><span></span>';
+                document.querySelector('#chat_logs>div:first-child').appendChild(d);
+                
+                window.electron.send('chatbot', document.querySelector('#chat_send>div').innerText);
+                document.querySelector('#chat_send>div').innerHTML = '';
+
+                d.scrollIntoView({behavior: 'smooth', block: 'end'});
+            };
+            document.querySelector('#chat_send>div').onkeyup = e => {
+                if (e.key == 'Enter') document.querySelector('#chat_send>button:last-child').click();
             };
             document.querySelectorAll('#foot div').forEach((x,n) => x.onclick = e => load_page(x, n));
         }

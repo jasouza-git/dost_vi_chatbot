@@ -165,6 +165,7 @@ const createWindow = () => {
   });
   ipcMain.on('chatbot', async (event, msg) => {
     chats[''].push({role:'user',content: msg});
+    console.log('Making request to ollama');
     const res = await ollama.chat({
       model: 'dost',
       messages: chats[''],
@@ -172,7 +173,7 @@ const createWindow = () => {
     chats[''].push(res.message);
     main.webContents.send('chatbot', res.message.content);
   })
-  //main.webContents.openDevTools();
+  main.webContents.openDevTools();
 }
 
 
