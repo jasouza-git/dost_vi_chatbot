@@ -17,7 +17,11 @@ const config = {
 }
 
 /* ----- VARIABLES ----- */
-var main, web, chats = {};
+var main, web, chats = {
+  '': [
+    {'role':'assistant', 'content':"😊 Hi there! I'm Chatbot by DOST, your helpful assistant for all things related to the Department of Science and Technology (DOST). I'd be delighted to assist you with any questions or concerns about DOST programs, scholarships, and services. What's on your mind? 🤔"}
+  ]
+};
 
 /* ----- MAIN BROWSER ----- */
 const browse = async (site, end='', func=()=>{}) => {
@@ -152,13 +156,22 @@ const createWindow = () => {
   main.setTitle('DOST VI - Chatbot');
   main.setIcon('logo.png');
   main.loadFile('index.html');
-  stage0();
+  //stage0();
 
 
   ipcMain.on('action', (event, action) => {
     if (action == 'login') browse('https://business.facebook.com/login/?next=https%3A%2F%2Fbusiness.facebook.com%2F%3Fnav_ref%3Dbiz_unified_f3_login_page_to_mbs%26biz_login_source%3Dbiz_unified_f3_fb_login_button%26join_id%3Dd6177472-2033-4acc-8051-61defc4532b2', 'Meta Business Suite', stage0);
     else if (action == 'browser') browse('https://business.facebook.com/login/?next=https%3A%2F%2Fbusiness.facebook.com%2F%3Fnav_ref%3Dbiz_unified_f3_login_page_to_mbs%26biz_login_source%3Dbiz_unified_f3_fb_login_button%26join_id%3Dd6177472-2033-4acc-8051-61defc4532b2');
   });
+  ipcMain.on('chatbot', async (event, msg) => {
+    chats[''].push({role:'user',content: msg});
+    const res = await ollama.chat({
+      model: 'dost',
+      messages: chats[''],
+    });
+    chats[''].push(res.message);
+    main.webContents.send('chatbot', res.message.content);
+  })
   //main.webContents.openDevTools();
 }
 
