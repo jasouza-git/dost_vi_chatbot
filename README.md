@@ -1,6 +1,13 @@
 # DOST VI - Chatbot
 ### How to start
 ```bash
+# Clone repository
+git clone https://github.com/jasouza-git/dost_vi_chatbot
+cd dost_vi_chatbot
+# Fine-tune DOST Model (From Llama3 8B)
+cd model
+ollama create dost -f dost_chatbot.modelfile
+cd ..
 # Install dependencies
 npm i
 # Start app
@@ -80,15 +87,6 @@ npm start
       <tr><td>Training our own custom model</td><td>To train or fine-tune the model on the dataset of four provided documents, we applied some LLM techniques like Chunking, Few Shot Learning, and Prompt engineering to enhance the efficiency and accuracy of the information that's retrieved and processed in the NLP. The hardest data set to train on was the RSTL services document because is was the largest among the four</td></tr>
       <tr><td>Graphical Designing</td><td>Since our groups consist primarly of Computer engineering students we lacked the human resources to design a good graphical user interface so we had to spend alot of time planning and trail and error a good looking interface. Resulting into a minimalistic simple interface</td></tr>
     </table>
-  </details>
-  <details open>
-    <summary><b>User interface</b></summary>
-  </details>
-  <details open>
-    <summary><b>Challenges</b></summary>
-  </details>
-  <details open>
-    <summary><b>Current Limitations</b></summary>
   </details>
 </details>
 
